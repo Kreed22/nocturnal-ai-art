@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nocturnal AI Art | Keegan van Randen — Generative AI Creative Specialist</title>
+  <meta name="description" content="Nocturnal AI Art by Keegan van Randen — GenAI Imagery, AI Video, Photoshop Post-Production, and Digital Art.">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600&family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ CSS Variables ═══ */
+    :root {
+      --bg-deep: #08080c;
+      --bg-card: #10101a;
+      --bg-surface: #181820;
+      --bg-hover: #20202a;
+      --accent: #c09060;
+      --accent-dim: #9a7348;
+      --accent-light: #d4a872;
+      --accent-glow: rgba(192, 144, 96, 0.15);
+      --text-primary: #e8e4dc;
+      --text-secondary: #9a9690;
+      --text-muted: #5e5b56;
+      --border: #28282f;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Raleway', sans-serif;
+      --transition: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ═══ Reset & Base ═══ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ═══ Grain Overlay ═══ */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ═══ Scrollbar ═══ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-dim); border-radius: 3px; }
+
+    /* ═══ Navigation ═══ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.08);
+      transition: all 0.4s var(--transition);
+    }
+    nav.scrolled { padding: 0.8rem 3rem; background: rgba(10, 10, 15, 0.95); }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+    .nav-logo-img {
+      height: 42px;
+      width: auto;
+      transition: height 0.4s var(--transition);
+    }
+    nav.scrolled .nav-logo-img { height: 34px; }
+    .nav-logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--transition);
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Mobile nav */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text-secondary);
+      margin: 5px 0;
+      transition: all 0.3s;
+    }
+
+    /* ═══ Hero ═══ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201, 169, 110, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 60% at 20% 80%, rgba(201, 169, 110, 0.03) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 80% 80%, rgba(100, 80, 50, 0.03) 0%, transparent 60%);
+    }
+    .hero-overline {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 580px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat-number {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+    .hero-stat-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: fadeUp 0.8s 1.2s forwards;
+    }
+    .scroll-indicator span {
+      display: block;
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      margin: 0 auto;
+      animation: scrollPulse 2s infinite;
+    }
+
+    /* ═══ Sections ═══ */
+    section { padding: 6rem 3rem; }
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent-dim);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .section-divider {
+      width: 50px;
+      height: 1px;
+      background: var(--accent);
+      margin-bottom: 2rem;
+    }
+
+    /* ═══ About ═══ */
+    .about { max-width: 900px; margin: 0 auto; }
+    .about-text {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+    .about-text strong { color: var(--text-primary); font-weight: 500; }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 2.5rem;
+    }
+    .tool-cell {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      transition: background 0.3s;
+    }
+    .tool-cell:hover { background: var(--bg-hover); }
+    .tool-cell h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .tool-cell p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ═══ Portfolio ═══ */
+    .portfolio-section { max-width: 1400px; margin: 0 auto; }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.6rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .filter-btn:hover { border-color: var(--accent-dim); color: var(--text-primary); }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-deep);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .portfolio-item {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.5s var(--transition);
+    }
+    .portfolio-item:hover { border-color: var(--accent-dim); transform: translateY(-4px); }
+    .portfolio-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--transition), filter 0.6s;
+    }
+    .portfolio-item:hover img { transform: scale(1.05); filter: brightness(0.7); }
+    .portfolio-item .overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(to top, rgba(10, 10, 15, 0.95), transparent);
+      transform: translateY(100%);
+      transition: transform 0.4s var(--transition);
+    }
+    .portfolio-item:hover .overlay { transform: translateY(0); }
+    .overlay h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .overlay .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* Video items */
+    .portfolio-item.video-item::before {
+      content: '▶';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: 50px; height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201, 169, 110, 0.9);
+      color: var(--bg-deep);
+      border-radius: 50%;
+      font-size: 1rem;
+      padding-left: 3px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .portfolio-item.video-item:hover::before { opacity: 1; }
+
+    /* Placeholder items */
+    .portfolio-item.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.8rem;
+      border-style: dashed;
+    }
+    .placeholder-icon {
+      width: 40px; height: 40px;
+      border: 1px solid var(--text-muted);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+    .placeholder-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ═══ Lightbox ═══ */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10000;
+      background: rgba(5, 5, 8, 0.95);
+      backdrop-filter: blur(30px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .lightbox.active { display: flex; opacity: 1; }
+    .lightbox img, .lightbox video, .lightbox iframe {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 40px; height: 40px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .lightbox-close:hover { border-color: var(--accent); color: var(--accent); }
+    .lightbox-info {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+    .lightbox-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .lightbox-info .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ═══ Services ═══ */
+    .services-section { max-width: 1100px; margin: 0 auto; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+    .service-card {
+      background: var(--bg-card);
+      padding: 2.5rem 2rem;
+      transition: background 0.3s;
+      position: relative;
+    }
+    .service-card:hover { background: var(--bg-hover); }
+    .service-card::before {
+      content: attr(data-num);
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: rgba(201, 169, 110, 0.08);
+      position: absolute;
+      top: 1rem; right: 1.5rem;
+    }
+    .service-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+      color: var(--text-primary);
+    }
+    .service-card p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ═══ Contact ═══ */
+    .contact-section {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contact-text {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+    .contact-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.8rem 1.8rem;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .contact-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .contact-email {
+      display: block;
+      margin-top: 2rem;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.3s;
+    }
+    .contact-email:hover { opacity: 0.7; }
+
+    /* ═══ Footer ═══ */
+    footer {
+      text-align: center;
+      padding: 3rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ═══ Animations ═══ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 0.8; transform: scaleY(1.1); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══ Responsive ═══ */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(10, 10, 15, 0.98);
+        flex-direction: column;
+        padding: 1.5rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+      section { padding: 4rem 1.5rem; }
+      .hero { padding: 5rem 1.5rem 3rem; }
+      .hero-stats { gap: 1.5rem; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .filter-bar { gap: 0.3rem; }
+      .filter-btn { padding: 0.5rem 1rem; font-size: 0.7rem; }
+      .tools-grid { grid-template-columns: 1fr 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Navigation ═══ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="images/NocturnalLogo_icon.png" alt="Nocturnal AI Art" class="nav-logo-img">
+      <span class="nav-logo-text">Nocturnal AI Art</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ═══ Hero ═══ -->
+  <section class="hero">
+    <img src="images/NocturnalLogo.png" alt="Nocturnal AI Art" class="hero-logo" style="height:280px;width:auto;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s 0.1s forwards;">
+    <div class="hero-overline">Nocturnal AI Art — by Keegan van Randen</div>
+    <h1>Generative AI<br><span>Creative Specialist</span></h1>
+    <p class="hero-sub">
+      Blending 7+ years of CGI & animation craft with cutting-edge generative AI
+      to deliver production-ready imagery and cinematic video at scale.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-number">12+</span>
+        <div class="hero-stat-label">AI Platforms</div>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number">100%</span>
+        <div class="hero-stat-label">Job Success</div>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number">7+</span>
+        <div class="hero-stat-label">Years Experience</div>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number">24</span>
+        <div class="hero-stat-label">Projects Delivered</div>
+      </div>
+    </div>
+    <div class="scroll-indicator"><span></span></div>
+  </section>
+
+  <!-- ═══ About ═══ -->
+  <section id="about" class="about">
+    <div class="reveal">
+      <div class="section-label">About</div>
+      <h2 class="section-title">Creative Specialist. AI Native. Production Trained.</h2>
+      <div class="section-divider"></div>
+      <p class="about-text">
+        I'm a multi-disciplinary creative with a <strong>Bachelor of Arts in CGI and Animation</strong>,
+        trained in classical production at studios like Chocolate Tribe and Wicked Pixels — where I contributed to
+        the <strong>Netflix series Queen Sono</strong>, a full CGI Lexus advert, and national ad campaigns.
+      </p>
+      <p class="about-text">
+        Today, I combine that production foundation with fluency across a
+        <strong>full suite of generative AI tools</strong> — both imagery and video — to deliver assets that are
+        not just generated, but <strong>production-ready</strong>. Every output goes through professional Photoshop
+        post-production or DaVinci Resolve finishing before it reaches a client.
+      </p>
+      <p class="about-text">
+        As a <strong>Top-Rated freelancer on Upwork</strong> with a 100% Job Success Score,
+        I bring the same standard to every project: precise prompt engineering, meticulous documentation,
+        and work that clients actually want to use.
+      </p>
+    </div>
+    <div class="tools-grid reveal">
+      <div class="tool-cell">
+        <h4>AI Video</h4>
+        <p>Runway, Kling, Sora, Luma, Hailuo, Veo</p>
+      </div>
+      <div class="tool-cell">
+        <h4>AI Imagery</h4>
+        <p>FLUX, Firefly, Gemini 3, GPT Image, Midjourney</p>
+      </div>
+      <div class="tool-cell">
+        <h4>Post-Production</h4>
+        <p>Photoshop, DaVinci Resolve, After Effects</p>
+      </div>
+      <div class="tool-cell">
+        <h4>3D & Animation</h4>
+        <p>Maya, Blender, ZBrush, 2D Animation</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Portfolio ═══ -->
+  <section id="portfolio" class="portfolio-section">
+    <div class="reveal">
+      <div class="section-label">Portfolio</div>
+      <h2 class="section-title">Selected Work</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="filter-bar reveal">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="video">AI Video & Motion</button>
+      <button class="filter-btn" data-filter="advertising">Brand & Advertising</button>
+      <button class="filter-btn" data-filter="web">Web & Digital</button>
+      <button class="filter-btn" data-filter="art">Concept Art & Wallpapers</button>
+    </div>
+
+    <div class="portfolio-grid" id="portfolioGrid">
+
+      <!--
+        ═══════════════════════════════════════════════════════════
+        HOW TO ADD YOUR OWN WORK:
+
+        For IMAGES — copy this template:
+
+        <div class="portfolio-item" data-category="advertising" data-title="Project Name" data-tag="Brand & Advertising">
+          <img src="images/your-image.jpg" alt="Project Name" loading="lazy">
+          <div class="overlay">
+            <h3>Project Name</h3>
+            <span class="tag">Brand & Advertising</span>
+          </div>
+        </div>
+
+        For VIDEOS — use this template (add class "video-item"):
+
+        <div class="portfolio-item video-item" data-category="video" data-title="Video Name" data-tag="AI Video & Motion" data-video="https://www.youtube.com/embed/YOUR_VIDEO_ID">
+          <img src="images/video-thumbnail.jpg" alt="Video Name" loading="lazy">
+          <div class="overlay">
+            <h3>Video Name</h3>
+            <span class="tag">AI Video & Motion</span>
+          </div>
+        </div>
+
+        Categories: video | advertising | web | art
+        Put your images in an "images" folder next to this file.
+        ═══════════════════════════════════════════════════════════
+      -->
+
+      <!-- ─── SAMPLE PLACEHOLDERS (replace with your real work) ─── -->
+
+      <!-- AI Video & Motion -->
+      <div class="portfolio-item placeholder" data-category="video">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">AI Video Work</span>
+      </div>
+      <div class="portfolio-item placeholder" data-category="video">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">AI Video Work</span>
+      </div>
+
+      <!-- Brand & Advertising -->
+      <div class="portfolio-item placeholder" data-category="advertising">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Brand & Advertising</span>
+      </div>
+      <div class="portfolio-item placeholder" data-category="advertising">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Brand & Advertising</span>
+      </div>
+      <div class="portfolio-item placeholder" data-category="advertising">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Brand & Advertising</span>
+      </div>
+
+      <!-- Web & Digital -->
+      <div class="portfolio-item placeholder" data-category="web">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Web & Digital</span>
+      </div>
+      <div class="portfolio-item placeholder" data-category="web">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Web & Digital</span>
+      </div>
+
+      <!-- Concept Art & Wallpapers -->
+      <div class="portfolio-item placeholder" data-category="art">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Concept Art</span>
+      </div>
+      <div class="portfolio-item placeholder" data-category="art">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Concept Art</span>
+      </div>
+      <div class="portfolio-item placeholder" data-category="art">
+        <div class="placeholder-icon">+</div>
+        <span class="placeholder-text">Concept Art</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ Services ═══ -->
+  <section id="services" class="services-section">
+    <div class="reveal">
+      <div class="section-label">Services</div>
+      <h2 class="section-title">What I Offer</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="services-grid reveal">
+      <div class="service-card" data-num="01">
+        <h3>GenAI Image Generation</h3>
+        <p>Precise prompt strategies across FLUX, Firefly, Gemini 3, GPT Image, and Midjourney. Brand-aligned, production-ready output with full documentation.</p>
+      </div>
+      <div class="service-card" data-num="02">
+        <h3>AI Video Creation</h3>
+        <p>Cinematic AI video using Runway, Kling, Sora, Luma, and more. Short-form vertical content, character consistency, and narrative-driven sequences.</p>
+      </div>
+      <div class="service-card" data-num="03">
+        <h3>Photoshop Post-Production</h3>
+        <p>Expert retouching, compositing, artifact correction, and color grading. Layered, color-managed files delivered to brand photography standards.</p>
+      </div>
+      <div class="service-card" data-num="04">
+        <h3>Video Editing & Finishing</h3>
+        <p>DaVinci Resolve-based editing with professional color, music sync, sound design, and caption timing. Optimized for TikTok, Reels, and Shorts.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Contact ═══ -->
+  <section id="contact" class="contact-section">
+    <div class="reveal">
+      <div class="section-label">Get in Touch</div>
+      <h2 class="section-title">Let's Work Together</h2>
+      <div class="section-divider" style="margin-left:auto;margin-right:auto;"></div>
+      <p class="contact-text">
+        Available for contract roles, freelance projects, and creative collaboration.
+        Based in Johannesburg, South Africa — fully remote-ready.
+      </p>
+      <div class="contact-links">
+        <a href="https://www.upwork.com/freelancers/~01a644644a2816b754" target="_blank" class="contact-link">Upwork</a>
+        <a href="https://www.linkedin.com/in/keegan-van-randen-a98b41100/" target="_blank" class="contact-link">LinkedIn</a>
+      </div>
+      <a href="mailto:keegan.vr.22@gmail.com" class="contact-email">keegan.vr.22@gmail.com</a>
+    </div>
+  </section>
+
+  <!-- ═══ Footer ═══ -->
+  <footer>
+    &copy; 2026 Nocturnal AI Art — Keegan van Randen. All rights reserved.
+  </footer>
+
+  <!-- ═══ Lightbox ═══ -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <div id="lightboxContent"></div>
+    <div class="lightbox-info">
+      <h3 id="lightboxTitle"></h3>
+      <span class="tag" id="lightboxTag"></span>
+    </div>
+  </div>
+
+  <script>
+    // ─── Nav scroll effect ───
+    window.addEventListener('scroll', () => {
+      document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ─── Scroll reveal ───
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ─── Portfolio filter ───
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.portfolio-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        items.forEach(item => {
+          if (filter === 'all' || item.dataset.category === filter) {
+            item.style.display = '';
+            setTimeout(() => item.style.opacity = '1', 50);
+          } else {
+            item.style.opacity = '0';
+            setTimeout(() => item.style.display = 'none', 300);
+          }
+        });
+      });
+    });
+
+    // ─── Lightbox ───
+    items.forEach(item => {
+      if (item.classList.contains('placeholder')) return;
+      item.addEventListener('click', () => {
+        const lb = document.getElementById('lightbox');
+        const content = document.getElementById('lightboxContent');
+        const title = item.dataset.title || '';
+        const tag = item.dataset.tag || '';
+        document.getElementById('lightboxTitle').textContent = title;
+        document.getElementById('lightboxTag').textContent = tag;
+
+        if (item.dataset.video) {
+          content.innerHTML = `<iframe src="${item.dataset.video}" width="900" height="506" frameborder="0" allowfullscreen style="max-width:90vw;max-height:80vh;"></iframe>`;
+        } else {
+          const img = item.querySelector('img');
+          if (img) content.innerHTML = `<img src="${img.src}" alt="${title}">`;
+        }
+
+        lb.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      const lb = document.getElementById('lightbox');
+      lb.classList.remove('active');
+      document.getElementById('lightboxContent').innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+
+</body>
+</html>

@@ -590,6 +590,52 @@
 </head>
 <body>
 
+
+  <!-- ===== Nocturnal intro splash ===== -->
+<div id="nocturnal-splash">
+  <iframe src="nocturnal-splash.html" title="Nocturnal AI Art intro" scrolling="no"></iframe>
+  <button id="nocturnal-skip" aria-label="Skip intro">Skip &rsaquo;</button>
+</div>
+<style>
+  #nocturnal-splash{position:fixed;inset:0;z-index:99999;background:#08080c;
+    transition:opacity .9s ease;}
+  #nocturnal-splash iframe{width:100%;height:100%;border:0;display:block;}
+  #nocturnal-splash.hide{opacity:0;pointer-events:none;}
+  #nocturnal-skip{position:fixed;right:24px;bottom:22px;z-index:100000;
+    font:600 12px/1 'Outfit',sans-serif;letter-spacing:.18em;text-transform:uppercase;
+    color:#c09060;background:rgba(8,8,12,.4);border:1px solid rgba(192,144,96,.35);
+    border-radius:999px;padding:10px 18px;cursor:pointer;backdrop-filter:blur(6px);
+    transition:opacity .9s ease,background .3s ease;}
+  #nocturnal-skip:hover{background:rgba(192,144,96,.15);}
+  html.splash-lock,body.splash-lock{overflow:hidden!important;}
+</style>
+<script>
+(function(){
+  var el=document.getElementById('nocturnal-splash');
+  if(!el) return;
+  // Show only once per browser session (so it doesn't replay on every page nav).
+  // -> For EVERY visit, change sessionStorage to a no-op (delete the two seen lines).
+  if(sessionStorage.getItem('nocturnalSeen')){ el.remove(); return; }
+  document.documentElement.classList.add('splash-lock');
+  document.body.classList.add('splash-lock');
+  function dismiss(){
+    if(!el) return;
+    el.classList.add('hide');
+    var skip=document.getElementById('nocturnal-skip'); if(skip) skip.style.opacity='0';
+    document.documentElement.classList.remove('splash-lock');
+    document.body.classList.remove('splash-lock');
+    sessionStorage.setItem('nocturnalSeen','1');
+    setTimeout(function(){ if(el){el.remove(); el=null;} if(skip) skip.remove(); },1000);
+  }
+  var t=setTimeout(dismiss, 8500);            // auto-reveal the site after ~8.5s
+  document.getElementById('nocturnal-skip').addEventListener('click',function(e){
+    e.stopPropagation(); clearTimeout(t); dismiss();
+  });
+})();
+</script>
+<!-- ===== end splash ===== -->
+
+  
   <!-- ═══ Navigation ═══ -->
   <nav>
     <a href="#" class="nav-logo">
